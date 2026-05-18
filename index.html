@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moda Bella | Inventario y Facturación</title>
+  <style>
+    :root {
+      --primary: #c2185b;
+      --primary-dark: #8c0032;
+      --accent: #f8bbd0;
+      --bg: #fff7fb;
+      --card: #ffffff;
+      --ink: #2f2430;
+      --muted: #725f6f;
+      --success: #2e7d32;
+      --danger: #b00020;
+      --warning: #ef6c00;
+      --border: #efd6e3;
+      --shadow: 0 18px 45px rgba(117, 23, 68, 0.12);
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #fff7fb 0%, #fff 52%, #fde7ef 100%);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 36px 20px 24px;
+      background: radial-gradient(circle at top left, #ffebf3 0, transparent 34%), linear-gradient(135deg, #c2185b, #7b1b45);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .header-content,
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.78rem;
+      opacity: 0.86;
+      margin: 0 0 8px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4.2rem);
+      line-height: 1;
+    }
+
+    .hero-text {
+      max-width: 760px;
+      margin: 18px 0 0;
+      font-size: 1.08rem;
+      color: #ffeef5;
+    }
+
+    main {
+      padding: 28px 0 50px;
+    }
+
+
+    .store-preview {
+      margin-bottom: 24px;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: end;
+      margin-bottom: 16px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: var(--primary-dark);
+      font-size: 1.45rem;
+    }
+
+    .section-heading p {
+      margin: 6px 0 0;
+      color: var(--muted);
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .product-card {
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .product-card-media {
+      display: grid;
+      place-items: center;
+      min-height: 160px;
+      background: linear-gradient(135deg, #ffe2ee, #fff7fb);
+      color: var(--primary-dark);
+      font-size: 3rem;
+    }
+
+    .product-card-body {
+      padding: 18px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .product-card-body h3 {
+      margin: 0;
+      color: var(--ink);
+    }
+
+    .product-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .product-meta span {
+      background: #fff0f6;
+      border-radius: 999px;
+      padding: 5px 10px;
+    }
+
+    .product-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .product-price-row strong {
+      font-size: 1.35rem;
+      color: var(--primary-dark);
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metric,
+    .panel {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .metric {
+      padding: 20px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 1.7rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 22px;
+      overflow: hidden;
+    }
+
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 1.32rem;
+      color: var(--primary-dark);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .panel-header h2 {
+      margin: 0;
+    }
+
+    .product-entry {
+      border: 1px solid #f0c9dc;
+      border-radius: 18px;
+      padding: 18px;
+      background: #fffafd;
+    }
+
+    .product-entry legend {
+      padding: 0 10px;
+      color: var(--primary-dark);
+      font-weight: 900;
+      font-size: 1.05rem;
+    }
+
+    form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      font-weight: 700;
+      color: #513449;
+      font-size: 0.9rem;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 13px;
+      font: inherit;
+      color: var(--ink);
+      background: #fff;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(194, 24, 91, 0.12);
+    }
+
+    textarea {
+      min-height: 84px;
+      resize: vertical;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(117, 23, 68, 0.16);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #ffe0ec;
+      color: var(--primary-dark);
+    }
+
+    .btn-danger {
+      background: #ffe2e8;
+      color: var(--danger);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+
+    th,
+    td {
+      padding: 13px 14px;
+      text-align: left;
+      border-bottom: 1px solid #f4dfeb;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #fff0f6;
+      color: var(--primary-dark);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.78rem;
+    }
+
+    .status.ok {
+      background: #e6f4ea;
+      color: var(--success);
+    }
+
+    .status.low {
+      background: #fff3e0;
+      color: var(--warning);
+    }
+
+    .status.out {
+      background: #ffe8ed;
+      color: var(--danger);
+    }
+
+    .invoice-preview {
+      background: #fff;
+      border: 1px dashed #d891ad;
+      border-radius: 18px;
+      padding: 18px;
+      margin-top: 16px;
+    }
+
+    .invoice-preview h3 {
+      margin: 0 0 10px;
+      color: var(--primary-dark);
+    }
+
+    .totals {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+      font-size: 1rem;
+    }
+
+    .totals div {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .grand-total {
+      font-size: 1.32rem;
+      font-weight: 900;
+      color: var(--primary-dark);
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+    }
+
+    .notice {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .empty {
+      padding: 18px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .dashboard,
+      .grid,
+      .preview-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      header {
+        padding-top: 28px;
+      }
+
+      .dashboard,
+      .grid,
+      .preview-grid,
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .panel,
+      .product-entry {
+        padding: 18px;
+      }
+
+      .panel-header {
+        align-items: stretch;
+        flex-direction: column;
+      }
+    }
+
+    @media print {
+      header,
+      .dashboard,
+      .inventory-panel,
+      .billing-form,
+      .actions button:not(.print-button),
+      .notice {
+        display: none !important;
+      }
+
+      body {
+        background: white;
+      }
+
+      main,
+      .header-content {
+        width: 100%;
+      }
+
+      .grid {
+        display: block;
+      }
+
+      .panel,
+      .invoice-preview {
+        box-shadow: none;
+        border: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <p class="eyebrow">Tienda online de ropa femenina</p>
+      <h1>Moda Bella</h1>
+      <p class="hero-text">Administra prendas, existencias, precios y facturas desde un solo panel. Los datos se guardan automáticamente en este navegador usando almacenamiento local.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="dashboard" aria-label="Resumen de tienda">
+      <article class="metric">
+        <span>Productos registrados</span>
+        <strong id="metricProducts">0</strong>
+      </article>
+      <article class="metric">
+        <span>Unidades disponibles</span>
+        <strong id="metricUnits">0</strong>
+      </article>
+      <article class="metric">
+        <span>Valor del inventario</span>
+        <strong id="metricValue">$0.00</strong>
+      </article>
+      <article class="metric">
+        <span>Ventas emitidas</span>
+        <strong id="metricInvoices">0</strong>
+      </article>
+    </section>
+
+
+    <section class="store-preview" aria-label="Vista previa de la tienda online">
+      <div class="section-heading">
+        <div>
+          <h2>Vista previa de la tienda</h2>
+          <p>Así verán tus clientas los productos disponibles antes de comprar.</p>
+        </div>
+        <button class="btn-secondary" type="button" onclick="window.scrollTo({ top: document.querySelector('.inventory-panel').offsetTop, behavior: 'smooth' })">Administrar inventario</button>
+      </div>
+      <div class="preview-grid" id="storePreview"></div>
+    </section>
+
+    <section class="grid">
+      <article class="panel inventory-panel">
+        <div class="panel-header">
+          <h2>Inventario de prendas</h2>
+          <button class="btn-secondary" type="button" id="newProductButton">+ Agregar nuevo producto</button>
+        </div>
+        <form id="inventoryForm">
+          <fieldset class="product-entry">
+            <legend id="productFormLegend">Agregar nuevo producto</legend>
+            <input type="hidden" id="productId" />
+            <div class="form-row">
+              <label>Nombre del nuevo producto
+                <input id="productName" type="text" placeholder="Vestido floral" required />
+              </label>
+              <label>Categoría
+                <select id="category" required>
+                  <option value="Vestidos">Vestidos</option>
+                  <option value="Blusas">Blusas</option>
+                  <option value="Pantalones">Pantalones</option>
+                  <option value="Faldas">Faldas</option>
+                  <option value="Accesorios">Accesorios</option>
+                </select>
+              </label>
+            </div>
+            <div class="form-row">
+              <label>Talla
+                <input id="size" type="text" placeholder="S, M, L" required />
+              </label>
+              <label>Color
+                <input id="color" type="text" placeholder="Rosa" required />
+              </label>
+            </div>
+            <div class="form-row">
+              <label>Precio unitario
+                <input id="price" type="number" min="0" step="0.01" placeholder="39.99" required />
+              </label>
+              <label>Existencia
+                <input id="stock" type="number" min="0" step="1" placeholder="12" required />
+              </label>
+            </div>
+            <div class="actions">
+              <button class="btn-primary" type="submit" id="saveProductButton">Agregar producto</button>
+              <button class="btn-secondary" type="button" id="clearInventoryForm">Limpiar</button>
+            </div>
+          </fieldset>
+        </form>
+
+        <p class="notice">Consejo: edita o elimina prendas desde la tabla. El inventario se descuenta automáticamente al facturar.</p>
+        <div class="table-wrap" style="margin-top: 16px;">
+          <table aria-label="Listado de inventario">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Talla/Color</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="inventoryTable"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="panel">
+        <h2>Facturación</h2>
+        <form id="invoiceForm" class="billing-form">
+          <div class="form-row">
+            <label>Cliente
+              <input id="customerName" type="text" placeholder="Nombre del cliente" required />
+            </label>
+            <label>Documento / NIT
+              <input id="customerDocument" type="text" placeholder="Identificación" required />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Producto
+              <select id="invoiceProduct" required></select>
+            </label>
+            <label>Cantidad
+              <input id="invoiceQuantity" type="number" min="1" step="1" value="1" required />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Impuesto (%)
+              <input id="taxRate" type="number" min="0" step="0.01" value="15" required />
+            </label>
+            <label>Descuento
+              <input id="discount" type="number" min="0" step="0.01" value="0" required />
+            </label>
+          </div>
+          <label>Notas
+            <textarea id="invoiceNotes" placeholder="Forma de pago, dirección o comentarios"></textarea>
+          </label>
+          <div class="actions">
+            <button class="btn-primary" type="submit">Generar factura</button>
+            <button class="btn-secondary print-button" type="button" onclick="window.print()">Imprimir / PDF</button>
+          </div>
+        </form>
+
+        <section class="invoice-preview" id="invoicePreview" aria-live="polite">
+          <h3>Factura pendiente</h3>
+          <p>Completa el formulario para generar una factura y descontar el inventario.</p>
+        </section>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const currency = new Intl.NumberFormat('es-US', { style: 'currency', currency: 'USD' });
+    const INVENTORY_KEY = 'modaBellaInventario';
+    const INVOICES_KEY = 'modaBellaFacturas';
+
+    const sampleInventory = [
+      { id: crypto.randomUUID(), name: 'Vestido midi floral', category: 'Vestidos', size: 'M', color: 'Rosa', price: 48.99, stock: 10 },
+      { id: crypto.randomUUID(), name: 'Blusa satinada', category: 'Blusas', size: 'S', color: 'Marfil', price: 29.5, stock: 7 },
+      { id: crypto.randomUUID(), name: 'Pantalón palazzo', category: 'Pantalones', size: 'L', color: 'Negro', price: 42, stock: 4 }
+    ];
+
+    let inventory = JSON.parse(localStorage.getItem(INVENTORY_KEY)) || sampleInventory;
+    let invoices = JSON.parse(localStorage.getItem(INVOICES_KEY)) || [];
+
+    const inventoryForm = document.querySelector('#inventoryForm');
+    const productFormLegend = document.querySelector('#productFormLegend');
+    const saveProductButton = document.querySelector('#saveProductButton');
+    const invoiceForm = document.querySelector('#invoiceForm');
+    const inventoryTable = document.querySelector('#inventoryTable');
+    const storePreview = document.querySelector('#storePreview');
+    const invoiceProduct = document.querySelector('#invoiceProduct');
+    const invoicePreview = document.querySelector('#invoicePreview');
+
+    function saveData() {
+      localStorage.setItem(INVENTORY_KEY, JSON.stringify(inventory));
+      localStorage.setItem(INVOICES_KEY, JSON.stringify(invoices));
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('\"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function getStockStatus(stock) {
+      if (stock === 0) return ['out', 'Agotado'];
+      if (stock <= 5) return ['low', 'Bajo'];
+      return ['ok', 'Disponible'];
+    }
+
+    function renderMetrics() {
+      const totalUnits = inventory.reduce((sum, item) => sum + item.stock, 0);
+      const totalValue = inventory.reduce((sum, item) => sum + item.stock * item.price, 0);
+      document.querySelector('#metricProducts').textContent = inventory.length;
+      document.querySelector('#metricUnits').textContent = totalUnits;
+      document.querySelector('#metricValue').textContent = currency.format(totalValue);
+      document.querySelector('#metricInvoices').textContent = invoices.length;
+    }
+
+    function renderStorePreview() {
+      const available = inventory.filter((item) => item.stock > 0);
+      if (!available.length) {
+        storePreview.innerHTML = '<div class="empty product-card">No hay prendas disponibles para mostrar en la tienda.</div>';
+        return;
+      }
+
+      storePreview.innerHTML = available.map((item) => `
+        <article class="product-card">
+          <div class="product-card-media" aria-hidden="true">👗</div>
+          <div class="product-card-body">
+            <h3>${escapeHtml(item.name)}</h3>
+            <div class="product-meta">
+              <span>${escapeHtml(item.category)}</span>
+              <span>Talla ${escapeHtml(item.size)}</span>
+              <span>${escapeHtml(item.color)}</span>
+            </div>
+            <div class="product-price-row">
+              <strong>${currency.format(item.price)}</strong>
+              <span class="status ok">${item.stock} disponibles</span>
+            </div>
+          </div>
+        </article>`).join('');
+    }
+
+    function renderInventory() {
+      if (!inventory.length) {
+        inventoryTable.innerHTML = '<tr><td colspan="7" class="empty">No hay productos registrados.</td></tr>';
+      } else {
+        inventoryTable.innerHTML = inventory.map((item) => {
+          const [statusClass, statusLabel] = getStockStatus(item.stock);
+          return `
+            <tr>
+              <td><strong>${escapeHtml(item.name)}</strong></td>
+              <td>${escapeHtml(item.category)}</td>
+              <td>${escapeHtml(item.size)} / ${escapeHtml(item.color)}</td>
+              <td>${currency.format(item.price)}</td>
+              <td>${item.stock}</td>
+              <td><span class="status ${statusClass}">${statusLabel}</span></td>
+              <td class="actions">
+                <button class="btn-secondary" type="button" onclick="editProduct('${item.id}')">Editar</button>
+                <button class="btn-danger" type="button" onclick="deleteProduct('${item.id}')">Eliminar</button>
+              </td>
+            </tr>`;
+        }).join('');
+      }
+    }
+
+    function renderProductOptions() {
+      const available = inventory.filter((item) => item.stock > 0);
+      if (!available.length) {
+        invoiceProduct.innerHTML = '<option value="">Sin productos disponibles</option>';
+        invoiceProduct.disabled = true;
+        return;
+      }
+      invoiceProduct.disabled = false;
+      invoiceProduct.innerHTML = available.map((item) => (
+        `<option value="${item.id}">${escapeHtml(item.name)} · ${escapeHtml(item.size)}/${escapeHtml(item.color)} · ${currency.format(item.price)} · Stock ${item.stock}</option>`
+      )).join('');
+    }
+
+    function renderAll() {
+      renderMetrics();
+      renderStorePreview();
+      renderInventory();
+      renderProductOptions();
+      saveData();
+    }
+
+    function resetProductForm() {
+      inventoryForm.reset();
+      document.querySelector('#productId').value = '';
+      productFormLegend.textContent = 'Agregar nuevo producto';
+      saveProductButton.textContent = 'Agregar producto';
+      document.querySelector('#productName').focus();
+    }
+
+    inventoryForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const id = document.querySelector('#productId').value || crypto.randomUUID();
+      const product = {
+        id,
+        name: document.querySelector('#productName').value.trim(),
+        category: document.querySelector('#category').value,
+        size: document.querySelector('#size').value.trim().toUpperCase(),
+        color: document.querySelector('#color').value.trim(),
+        price: Number(document.querySelector('#price').value),
+        stock: Number(document.querySelector('#stock').value)
+      };
+
+      const currentIndex = inventory.findIndex((item) => item.id === id);
+      if (currentIndex >= 0) {
+        inventory[currentIndex] = product;
+      } else {
+        inventory.push(product);
+      }
+
+      resetProductForm();
+      renderAll();
+    });
+
+    document.querySelector('#clearInventoryForm').addEventListener('click', resetProductForm);
+    document.querySelector('#newProductButton').addEventListener('click', resetProductForm);
+
+    window.editProduct = function editProduct(id) {
+      const product = inventory.find((item) => item.id === id);
+      if (!product) return;
+      productFormLegend.textContent = 'Editar producto';
+      saveProductButton.textContent = 'Actualizar producto';
+      document.querySelector('#productId').value = product.id;
+      document.querySelector('#productName').value = product.name;
+      document.querySelector('#category').value = product.category;
+      document.querySelector('#size').value = product.size;
+      document.querySelector('#color').value = product.color;
+      document.querySelector('#price').value = product.price;
+      document.querySelector('#stock').value = product.stock;
+      window.scrollTo({ top: 260, behavior: 'smooth' });
+    };
+
+    window.deleteProduct = function deleteProduct(id) {
+      const product = inventory.find((item) => item.id === id);
+      if (!product || !confirm(`¿Eliminar ${product.name} del inventario?`)) return;
+      inventory = inventory.filter((item) => item.id !== id);
+      renderAll();
+    };
+
+    invoiceForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const product = inventory.find((item) => item.id === invoiceProduct.value);
+      const quantity = Number(document.querySelector('#invoiceQuantity').value);
+      const discount = Number(document.querySelector('#discount').value);
+      const taxRate = Number(document.querySelector('#taxRate').value);
+
+      if (!product) {
+        alert('Selecciona un producto disponible.');
+        return;
+      }
+
+      if (quantity > product.stock) {
+        alert(`Solo hay ${product.stock} unidades disponibles de ${product.name}.`);
+        return;
+      }
+
+      const subtotal = product.price * quantity;
+      const taxableBase = Math.max(subtotal - discount, 0);
+      const tax = taxableBase * (taxRate / 100);
+      const total = taxableBase + tax;
+      const invoice = {
+        number: invoices.length + 1,
+        date: new Date().toLocaleString('es-US'),
+        customerName: document.querySelector('#customerName').value.trim(),
+        customerDocument: document.querySelector('#customerDocument').value.trim(),
+        product: { ...product },
+        quantity,
+        discount,
+        taxRate,
+        subtotal,
+        tax,
+        total,
+        notes: document.querySelector('#invoiceNotes').value.trim()
+      };
+
+      product.stock -= quantity;
+      invoices.push(invoice);
+      invoiceForm.reset();
+      document.querySelector('#invoiceQuantity').value = 1;
+      document.querySelector('#taxRate').value = 15;
+      document.querySelector('#discount').value = 0;
+      showInvoice(invoice);
+      renderAll();
+    });
+
+    function showInvoice(invoice) {
+      invoicePreview.innerHTML = `
+        <h3>Factura #${String(invoice.number).padStart(4, '0')}</h3>
+        <p><strong>Fecha:</strong> ${invoice.date}</p>
+        <p><strong>Cliente:</strong> ${escapeHtml(invoice.customerName)} · <strong>Documento:</strong> ${escapeHtml(invoice.customerDocument)}</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Importe</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>${escapeHtml(invoice.product.name)} (${escapeHtml(invoice.product.size)}/${escapeHtml(invoice.product.color)})</td>
+                <td>${invoice.quantity}</td>
+                <td>${currency.format(invoice.product.price)}</td>
+                <td>${currency.format(invoice.subtotal)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="totals">
+          <div><span>Subtotal</span><strong>${currency.format(invoice.subtotal)}</strong></div>
+          <div><span>Descuento</span><strong>-${currency.format(invoice.discount)}</strong></div>
+          <div><span>Impuesto (${invoice.taxRate}%)</span><strong>${currency.format(invoice.tax)}</strong></div>
+          <div class="grand-total"><span>Total</span><strong>${currency.format(invoice.total)}</strong></div>
+        </div>
+        ${invoice.notes ? `<p><strong>Notas:</strong> ${escapeHtml(invoice.notes)}</p>` : ''}
+      `;
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
